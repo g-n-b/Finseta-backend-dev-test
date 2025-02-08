@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Finseta Payments API
+  version: 1.0.0
+
+tags:
+  -  name: payments
+     description: Payments API
+paths:
+  /payments:
+    get:
+      description: Get Payments
+      tags:
+        - payments
+      parameters:
+        - in: query
+          name: minAmount
+          required: false
+          schema:
+            type: number
+          description: The minimum payment amount (inclusive)
+        - in: query
+          name: currencies
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          description: A list of three letter ISO 4217 codes to include
+      responses:
+        '200':
+          description: Payments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payments'
+              examples:
+                Payments:
+                  $ref: '#/components/examples/Payments'
+                NoPaymentsFound:
+                  $ref: '#/components/examples/NoPaymentsFound'
+
+    post:
+      description: Create Payment
+      tags:
+        - payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+      responses:
+        '201':
+          description: Payment Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - SORT_CODE_ACCOUNT_NUMBER
+        accountNumber:
+          type: string
+          minLength: 8
+          maxLength: 8
+          example: 12345678
+        sortCode:
+          type: string
+          minLength: 6
+          maxLength: 6
+          example: 123456
+      required:
+        - type
+        - accountNumber
+        - sortCode
+    Payment:
+      type: object
+      properties:
+        currency:
+          description: The three letter ISO 4217 code
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: GBP
+        amount:
+          type: number
+          example: 10.00
+        counterparty:
+          $ref: '#/components/schemas/Account'
+      required:
+        - currency
+        - amount
+        - counterparty
+    Payments:
+      type: array
+      readOnly: true
+      items:
+        $ref: '#/components/schemas/Payment'
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+    BadRequest:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+  examples:
+    NoPaymentsFound:
+      summary: No Payments Found
+      value: []
+    Payments:
+      summary: Payments
+      value:
+        - currency: GBP
+          amount: 100.00
+          counterparty:
+            type: SORT_CODE_ACCOUNT_NUMBER
+            accountNumber: 123456
+            sortCode: 12345678
+        - currency: EUR
+          amount: 250.10
+          counterparty:
+            type: SORT_CODE_ACCOUNT_NUMBER
+            accountNumber: 123456
+            sortCode: 12345678
