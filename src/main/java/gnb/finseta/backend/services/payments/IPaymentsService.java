@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface IPaymentsService {
-    void getPayments(BigDecimal minAmount, List<String> currencies);
+    List<Payment> getPayments(BigDecimal minAmount, List<String> currencies);
 
-
-    void handlePaymentRequest(Payment payment);
+    Payment handlePaymentRequest(Payment payment);
 }

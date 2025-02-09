@@ -20,6 +20,8 @@ import org.springframework.web.ErrorResponse;
 
 import java.math.BigDecimal;
 
+import static gnb.finseta.backend.TestUtils.defaultAccountBuilder;
+import static gnb.finseta.backend.TestUtils.defaultPaymentBuilder;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -171,19 +173,5 @@ public class PaymentsIntegrationTest {
                 .statusCode(BAD_REQUEST_CODE);
     }
 
-    private static Payment.PaymentBuilder defaultPaymentBuilder() {
-        var counterParty = defaultAccountBuilder().build();
 
-        return Payment.builder()
-                .amount(BigDecimal.TEN)
-                .currency("NZD")
-                .counterparty(counterParty);
-    }
-
-    private static Account.AccountBuilder defaultAccountBuilder() {
-        return Account.builder()
-                .type(Account.TypeEnum.SORT_CODE_ACCOUNT_NUMBER)
-                .accountNumber("123")
-                .sortCode("123456");
-    }
 }
