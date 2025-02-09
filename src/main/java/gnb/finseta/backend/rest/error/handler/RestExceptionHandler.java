@@ -6,7 +6,6 @@ import org.openapitools.model.Error;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,7 +39,9 @@ public class RestExceptionHandler {
 
 		List<Error> listOfErrs = argumentNotValidException.getAllErrors().stream()
 				.map(error -> Error.builder()
-						.message(error.getDefaultMessage())
+						.message(error.toString()
+								.substring(0, Math.min(100, error.toString().length()))
+								.concat("..."))
 						.build())
 				.toList();
 		return ResponseEntity.badRequest()

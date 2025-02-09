@@ -2,6 +2,7 @@ package gnb.finseta.backend.rest.error.handler;
 
 import gnb.finseta.backend.exceptions.InvalidRequestFieldException;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.BadRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.ObjectError;
@@ -42,15 +43,15 @@ class RestExceptionHandlerTest {
                 .when(ex)
                 .getAllErrors();
         doReturn("error specifics").when(err)
-                .getDefaultMessage();
+                .toString();
 
         var res = subject.handleMethodArgumentNotValidException(ex);
 
         assertEquals(HttpStatusCode.valueOf(400), res.getStatusCode());
         assertTrue(res.hasBody());
-        var body = res.getBody();
+        BadRequest body = res.getBody();
         assertEquals(1, body.getErrors().size());
-        assertEquals("error specifics", body.getErrors().get(0).getMessage());
+        assertEquals("error specifics...", body.getErrors().get(0).getMessage());
     }
 
     @Test

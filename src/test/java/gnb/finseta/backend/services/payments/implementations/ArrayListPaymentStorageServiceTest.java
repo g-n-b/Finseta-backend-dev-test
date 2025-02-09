@@ -45,6 +45,16 @@ class ArrayListPaymentStorageServiceTest {
 	}
 
 	@Test
+	void thatNoFilterParamsWillReturnAllElements() {
+		var payment = defaultPaymentBuilder().build();
+
+		subject.createPayment(payment);
+		var res = subject.getPayments(null, null);
+		assertEquals(1, res.size());
+		assertEquals(payment, res.get(0));
+	}
+
+	@Test
 	void thatPaymentsCanBeFilteredByCurrency() {
 		var paymentNz = defaultPaymentBuilder().build();
 		var paymentUk = defaultPaymentBuilder().currency("GBP").build();
