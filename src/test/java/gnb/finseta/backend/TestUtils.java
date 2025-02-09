@@ -18,7 +18,7 @@ public class TestUtils {
 	public static Account.AccountBuilder defaultAccountBuilder() {
 		return Account.builder()
 				.type(Account.TypeEnum.SORT_CODE_ACCOUNT_NUMBER)
-				.accountNumber("123")
+				.accountNumber("12345678")
 				.sortCode("123456");
 	}
 }

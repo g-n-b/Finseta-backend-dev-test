@@ -11,12 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openapitools.model.Account;
 import org.openapitools.model.Payment;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.ErrorResponse;
 
 import java.math.BigDecimal;
 
@@ -172,6 +170,4 @@ public class PaymentsIntegrationTest {
                 .then()
                 .statusCode(BAD_REQUEST_CODE);
     }
-
-
 }
