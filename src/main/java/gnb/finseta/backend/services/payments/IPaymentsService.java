@@ -1,13 +1,13 @@
 package gnb.finseta.backend.services.payments;
 
 import org.openapitools.model.Payment;
+import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface IPaymentsService {
-    void getPayments(BigDecimal minAmount, List<String> currencies);
+    List<Payment> getPayments(@Nullable BigDecimal minAmount, @Nullable List<String> currencies);
 
-
-    void handlePaymentRequest(Payment payment);
+    Payment handlePaymentRequest(Payment payment);
 }

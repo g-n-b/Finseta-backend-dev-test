@@ -37,21 +37,4 @@ class PaymentsApiControllerTest {
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertFalse(result.hasBody());
     }
-
-
-    private static Payment.PaymentBuilder defaultPaymentBuilder() {
-        var counterParty = defaultAccountBuilder().build();
-
-        return Payment.builder()
-                .amount(BigDecimal.TEN)
-                .currency("NZD")
-                .counterparty(counterParty);
-    }
-
-    private static Account.AccountBuilder defaultAccountBuilder() {
-        return Account.builder()
-                .type(Account.TypeEnum.SORT_CODE_ACCOUNT_NUMBER)
-                .accountNumber("123")
-                .sortCode("123456");
-    }
 }
