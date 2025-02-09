@@ -3,6 +3,7 @@ package gnb.finseta.backend.services.payments.implementations;
 import gnb.finseta.backend.exceptions.InvalidRequestFieldException;
 import gnb.finseta.backend.services.payments.IPaymentsService;
 import gnb.finseta.backend.services.payments.IPaymentsStorage;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.openapitools.model.Payment;
 import org.springframework.lang.Nullable;
@@ -32,7 +33,14 @@ public class PaymentsService implements IPaymentsService {
 	public Payment handlePaymentRequest(Payment payment) {
 		validateCurrencyCode(payment.getCurrency());
 		validateNewPaymentAmount(payment.getAmount());
+		validateCounterPartySortCode(payment.getCounterparty().getSortCode());
 		return storageManager.createPayment(payment);
+	}
+
+	private void validateCounterPartySortCode(@NotNull String sortCode) throws InvalidRequestFieldException {
+		final String counterPartySortCodeRegex = "\\d{6}";
+		if (sortCode.matches(counterPartySortCodeRegex)) return;
+		throw new InvalidRequestFieldException("Invalid Counter Party sort code: %s".formatted(sortCode));
 	}
 
 	private void validateNewPaymentAmount(BigDecimal amount) throws InvalidRequestFieldException {
