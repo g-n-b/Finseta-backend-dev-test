@@ -40,6 +40,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser</artifactId>
+			<version>2.1.22</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -47,6 +52,38 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<!-- RELEASE_VERSION -->
+				<version>6.6.0</version>
+				<!-- /RELEASE_VERSION -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+<!--							<inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>-->
+							<generatorName>java</generatorName>
+							<inputSpec>https://raw.githubusercontent.com/fxpress/backend-tech-test/refs/heads/main/openapi.yaml</inputSpec>
+							<output>${project.basedir}/src/main/java/gen</output>
+
+							<!--								this will generate loads of unnecessary prject files-->
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<interfaceOnly>true</interfaceOnly>
+							<skipOverwrite>false</skipOverwrite>
+							<packageName>gen.gnb.finseta.backend.org.openapitools.client</packageName>
+							<configOptions>
+								<useJakartaEe>true</useJakartaEe>
+								<library>resttemplate</library>
+								<interfaceOnly>true</interfaceOnly>
+								<serializationLibrary>jackson</serializationLibrary>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
