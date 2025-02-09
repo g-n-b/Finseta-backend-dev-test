@@ -1,49 +1,46 @@
-# Finseta Backend Tech Test
+# Submission for Finseta Technical Assessment
 
-You are provided with an OpenAPI specification for making and retrieving payments. We would like you to build a service 
-that implements the specification.
+By [Taylor Norton-Brown](https://linkedin.com/in/tgnb)
 
-The service should be written in Java, but you are free to choose a framework.
+## The Project
 
-You should provide instructions on how to run the service in your submission.
+Uses OpenApi to generate the controller and client facing DTOs to ensure consistency.
+It will create a java implementation off the publicly available swagger doc [here](                                https://raw.githubusercontent.com/fxpress/backend-tech-test/refs/heads/main/openapi.yaml
+).
 
-When complete please upload it to a public GitHub/GitLab repository and share the link with us.
+### Compiling
 
-You do **not** need to:
+```bash
+mvn clean install
+```
 
-* Implement authentication
-* Implement database persistence, an in memory option of your choice is fine
-* Perform any validations other than those listed below
+### Running
 
-# Acceptance Criteria
+```bash
+# In the base dir
+mvn spring-boot:run
+```
 
-## Scenario One: Create valid payment
+### Testing
 
-* Given I am a user
-* When I submit a valid payment
-  * `amount` > 0.00
-  * `currency` is not empty
-  * `counterparty.type` is `SORT_CODE_ACCOUNT_NUMBER`
-  * `counterparty.sortCode` must be 6 numeric characters
-  * `counterparty.accountNumber` must be 8 numeric characters
-* Then a HTTP CREATED response should be returned
+#### Using CRUD
 
-## Scenario Two: Create invalid payment
+```bash
+# Create a payment
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"currency": "GBP", "amount": 10.00, "counterparty": {"type": "SORT_CODE_ACCOUNT_NUMBER", "accountNumber": "12345678", "sortCode": "123456"}}' http://localhost:8080/payments
+```
 
-* Given I am a user
-* When I submit an invalid payment
-  * `amount` <= 0.00
-  * `currency` is empty
-  * `counterparty.type` is empty
-  * `counterparty.sortCode` is not 6 numeric characters
-  * `counterparty.sortCode` is not 8 numeric characters
-* Then a HTTP Bad Request should be returned 
+```bash
+# Get Payments
+curl -X GET \
+  'http://localhost:8080/payments?minAmount=10.00&currencies=GBP,EUR'
+```
 
-## Scenario Three: Retrieve payments
+#### Automated tests
 
-* Given I am a user
-* When I retrieve all payments
-* And I enter a list of currencies
-* And I enter a minimum amount
-* Then a HTTP OK status should be returned
-* And a filtered list of payments matching query parameters should be returned 
+Testing using JUnit5.0 happens on a 
+```bash
+mvn clean install
+```
