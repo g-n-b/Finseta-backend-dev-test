@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import static gnb.finseta.backend.TestUtils.defaultAccountBuilder;
 import static gnb.finseta.backend.TestUtils.defaultPaymentBuilder;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
@@ -52,22 +53,6 @@ public class PaymentsIntegrationTest {
         assertEquals(defaultPaymentBuilder().build(), response);
     }
 
-    /**
-     *         - in: query
-     *           name: minAmount
-     *           required: false
-     *           schema:
-     *             type: number
-     *           description: The minimum payment amount (inclusive)
-     *         - in: query
-     *           name: currencies
-     *           required: false
-     *           schema:
-     *             type: array
-     *             items:
-     *               type: string
-     *           description: A list of three letter ISO 4217 codes to include
-     */
     @Test
     void whenAmountLessThanMinimumRequestedForGetPaymentsReturnBadRequest() {
         given()
@@ -75,6 +60,18 @@ public class PaymentsIntegrationTest {
                 .get(PAYMENTS_URL)
                 .then()
                 .statusCode(BAD_REQUEST_CODE);
+    }
+
+    @Test
+    void whenPaymentIsCreatedItIsReturnedToTheCaller() {
+        fail();
+    }
+
+    @Test
+    void whenGetPaymentWithoutQueryParamsWillReturnAllPayments() {
+        // create 5 payments
+        // get 5 payments
+        fail();
     }
 
     @Test

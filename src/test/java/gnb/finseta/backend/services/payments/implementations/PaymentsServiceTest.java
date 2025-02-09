@@ -18,7 +18,10 @@ class PaymentsServiceTest {
 
 	@Test
 	void thatPaymentServiceCallsStorageServiceOnCreatePayment() {
-		Payment payment = new Payment();
+		Payment payment =  Payment.builder()
+				.amount(BigDecimal.ONE)
+				.currency("NZD")
+				.build();
 		subject.handlePaymentRequest(payment);
 
 		verify(storageMock).createPayment(eq(payment));

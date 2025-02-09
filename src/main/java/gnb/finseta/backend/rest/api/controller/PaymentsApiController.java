@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.openapitools.api.PaymentsApi;
 import org.openapitools.model.Payment;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +23,18 @@ public class PaymentsApiController implements PaymentsApi {
 	IPaymentsService paymentsService;
 
 	@Override
-	public ResponseEntity<List<Payment>> paymentsGet(@Valid BigDecimal minAmount, @Valid List<String> currencies) {
+	public ResponseEntity<List<Payment>> paymentsGet(
+			@Valid
+			@Nullable
+			BigDecimal minAmount,
+			@Valid
+			@Nullable
+			List<String> currencies) {
 
+		List<Payment> payments = paymentsService.getPayments(minAmount, currencies);
 		return ResponseEntity
 				.ok()
-				.body(paymentsService.getPayments(minAmount, currencies));
+				.body(payments);
 	}
 
 	@Override
