@@ -3,19 +3,19 @@ package gnb.finseta.backend.rest.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openapitools.model.Account;
 import org.openapitools.model.Payment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.ErrorResponse;
 
 import java.math.BigDecimal;
@@ -33,8 +33,13 @@ public class PaymentsIntegrationTest {
 
     ObjectMapper objectMapper = new JsonMapper();
 
+    @BeforeAll
+    static void init() {
+        RestAssured.defaultParser = Parser.JSON;
+    }
+
     @Test
-    void shouldCreateUser() throws Exception {
+    void validPaymentShouldReturn201withPaymentAsBody() throws Exception {
         // Given
         var requestBody = objectMapper.writeValueAsString(defaultPaymentBuilder().build());
 
@@ -44,8 +49,41 @@ public class PaymentsIntegrationTest {
                 .post(PAYMENTS_URL)
                 .then()
                 .statusCode(201).extract().as(Payment.class);
-
         assertEquals(defaultPaymentBuilder().build(), response);
+    }
+
+    /**
+     *         - in: query
+     *           name: minAmount
+     *           required: false
+     *           schema:
+     *             type: number
+     *           description: The minimum payment amount (inclusive)
+     *         - in: query
+     *           name: currencies
+     *           required: false
+     *           schema:
+     *             type: array
+     *             items:
+     *               type: string
+     *           description: A list of three letter ISO 4217 codes to include
+     */
+    @Test
+    void whenAmountLessThanMinimumRequestedForGetPaymentsReturnBadRequest() {
+        given()
+                .queryParam("minAmount", -1)
+                .get(PAYMENTS_URL)
+                .then()
+                .statusCode(BAD_REQUEST_CODE);
+    }
+
+    @Test
+    void whenCurrenciesGivenWithInvalidFormatReturnBadRequest() {
+        given()
+                .queryParam("currencies", new String[]{"NZ"})
+                .get(PAYMENTS_URL)
+                .then()
+                .statusCode(BAD_REQUEST_CODE);
     }
 
     @Test
@@ -54,14 +92,13 @@ public class PaymentsIntegrationTest {
 
         var requestBody = objectMapper.writeValueAsString(requestPayment);
 
-        var response = given().contentType(ContentType.JSON)
+        given().contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
                 .post(PAYMENTS_URL)
                 .then()
-                .statusCode(BAD_REQUEST_CODE).extract().as(ErrorResponse.class);
+                .statusCode(BAD_REQUEST_CODE);
 
-        assertEquals(BAD_REQUEST_CODE, response.getStatusCode().value());
     }
 
     @Test
@@ -75,9 +112,8 @@ public class PaymentsIntegrationTest {
                 .when()
                 .post(PAYMENTS_URL)
                 .then()
-                .statusCode(BAD_REQUEST_CODE).extract().as(ErrorResponse.class);
+                .statusCode(BAD_REQUEST_CODE);
 
-        assertEquals(BAD_REQUEST_CODE, response.getStatusCode().value());
     }
 
     @Test
@@ -93,20 +129,18 @@ public class PaymentsIntegrationTest {
                 .when()
                 .post(PAYMENTS_URL)
                 .then()
-                .statusCode(BAD_REQUEST_CODE).extract().as(ErrorResponse.class);
-
-        assertEquals(BAD_REQUEST_CODE, response.getStatusCode().value());
+                .statusCode(BAD_REQUEST_CODE);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"12345", "1234567", "ABCDEF"})
     void whenCounterPartySortCodeIsInvalidFormatThrowBadRequest(String invalidSortCode) throws JsonProcessingException {
         var requestPayment =
-        defaultPaymentBuilder()
-                .counterparty(defaultAccountBuilder()
-                        .sortCode(invalidSortCode)
-                        .build())
-                .build();
+                defaultPaymentBuilder()
+                        .counterparty(defaultAccountBuilder()
+                                .sortCode(invalidSortCode)
+                                .build())
+                        .build();
         var requestBody = objectMapper.writeValueAsString(requestPayment);
 
         var response = given().contentType(ContentType.JSON)
@@ -114,9 +148,8 @@ public class PaymentsIntegrationTest {
                 .when()
                 .post(PAYMENTS_URL)
                 .then()
-                .statusCode(BAD_REQUEST_CODE).extract().as(ErrorResponse.class);
+                .statusCode(BAD_REQUEST_CODE);
 
-        assertEquals(BAD_REQUEST_CODE, response.getStatusCode().value());
     }
 
     @ParameterizedTest
@@ -135,9 +168,7 @@ public class PaymentsIntegrationTest {
                 .when()
                 .post(PAYMENTS_URL)
                 .then()
-                .statusCode(BAD_REQUEST_CODE).extract().as(ErrorResponse.class);
-
-        assertEquals(BAD_REQUEST_CODE, response.getStatusCode().value());
+                .statusCode(BAD_REQUEST_CODE);
     }
 
     private static Payment.PaymentBuilder defaultPaymentBuilder() {
