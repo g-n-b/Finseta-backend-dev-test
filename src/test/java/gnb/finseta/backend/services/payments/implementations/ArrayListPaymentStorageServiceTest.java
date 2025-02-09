@@ -9,15 +9,15 @@ import java.util.List;
 import static gnb.finseta.backend.TestUtils.defaultPaymentBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CoreJavaPaymentStorageServiceTest {
+class ArrayListPaymentStorageServiceTest {
 
 	private static final String GBP = "GBP";
 	private static final String NZD = "NZD";
-	CoreJavaPaymentStorageService subject = new CoreJavaPaymentStorageService();
+	ArrayListPaymentStorageService subject = new ArrayListPaymentStorageService();
 
 	@BeforeEach
 	void init() {
-		subject = new CoreJavaPaymentStorageService();
+		subject = new ArrayListPaymentStorageService();
 	}
 
 	@Test

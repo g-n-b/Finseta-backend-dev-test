@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 import static java.util.Objects.isNull;
 
 @Service
-public class CoreJavaPaymentStorageService implements IPaymentsStorage {
+public class ArrayListPaymentStorageService implements IPaymentsStorage {
 
 	List<Payment> payments = new ArrayList<>();
 

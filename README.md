@@ -9,6 +9,15 @@ Uses OpenApi to generate the controller and client facing DTOs to ensure consist
 It will create a java implementation off the publicly available swagger doc [here](                                https://raw.githubusercontent.com/fxpress/backend-tech-test/refs/heads/main/openapi.yaml
 ).
 
+### Assumptions
+
+- Performance is not something that needs to highly optimised for.
+  - Hence, using an ArrayList for in-memory instead of other robust in-mem storage solutions like H2.
+- Code quality is key
+  - Use of SOLID principles is idea
+  - Code is Clean
+- Good practise (such as TDD, DDD and SOLID) is what is being tested for here.
+
 ### Compiling
 
 ```bash

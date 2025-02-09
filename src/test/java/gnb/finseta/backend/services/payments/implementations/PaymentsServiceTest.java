@@ -8,6 +8,7 @@ import org.openapitools.model.Payment;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static gnb.finseta.backend.TestUtils.defaultPaymentBuilder;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -18,10 +19,7 @@ class PaymentsServiceTest {
 
 	@Test
 	void thatPaymentServiceCallsStorageServiceOnCreatePayment() {
-		Payment payment =  Payment.builder()
-				.amount(BigDecimal.ONE)
-				.currency("NZD")
-				.build();
+		Payment payment =  defaultPaymentBuilder().build();
 		subject.handlePaymentRequest(payment);
 
 		verify(storageMock).createPayment(eq(payment));
