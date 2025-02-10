@@ -1,11 +1,14 @@
 package gnb.finseta.backend.services.payments.implementations;
 
 import gnb.finseta.backend.exceptions.InvalidRequestFieldException;
+import gnb.finseta.backend.logging.IRequestLogger;
 import gnb.finseta.backend.services.payments.IPaymentsService;
 import gnb.finseta.backend.services.payments.IPaymentsStorage;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.openapitools.model.Payment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -19,6 +22,7 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class PaymentsService implements IPaymentsService {
 	private final IPaymentsStorage storageManager;
+	private final IRequestLogger logger;
 
 	@Override
 	public List<Payment> getPayments(@Nullable BigDecimal minAmount, @Nullable List<String> currencies) {
@@ -52,6 +56,7 @@ public class PaymentsService implements IPaymentsService {
 	private void validateGetPaymentAmount(BigDecimal amount) throws InvalidRequestFieldException {
 		if (isNull(amount))
 			return;
+		logger.log("Amount %s".formatted(amount.toString()));
 		if (amount.compareTo(BigDecimal.ZERO) < 0) {
 			throw new InvalidRequestFieldException("Get Payment amount: %s".formatted(amount));
 		}
@@ -59,6 +64,7 @@ public class PaymentsService implements IPaymentsService {
 
 	private void validateCurrencyCode(String currencyCode) throws InvalidRequestFieldException {
 		String threeAlphabeticalCharacters = "[a-zA-Z]{3}";
+		logger.log("Currency code %s".formatted(currencyCode));
 		if (currencyCode.matches(threeAlphabeticalCharacters))
 			return;
 		throw new InvalidRequestFieldException("Currency code: %s".formatted(currencyCode));

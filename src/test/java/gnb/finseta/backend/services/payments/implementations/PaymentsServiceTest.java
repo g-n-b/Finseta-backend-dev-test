@@ -1,6 +1,7 @@
 package gnb.finseta.backend.services.payments.implementations;
 
 import gnb.finseta.backend.exceptions.InvalidRequestFieldException;
+import gnb.finseta.backend.logging.IRequestLogger;
 import gnb.finseta.backend.services.payments.IPaymentsService;
 import gnb.finseta.backend.services.payments.IPaymentsStorage;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.verify;
 
 class PaymentsServiceTest {
 	IPaymentsStorage storageMock = mock(IPaymentsStorage.class);
-	IPaymentsService subject = new PaymentsService(storageMock);
+	IPaymentsService subject = new PaymentsService(storageMock, mock(IRequestLogger.class));
 
 	@Test
 	void thatPaymentServiceCallsStorageServiceOnCreatePayment() {
