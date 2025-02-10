@@ -1,6 +1,7 @@
 package gnb.finseta.backend.rest.error.handler;
 
 import gnb.finseta.backend.exceptions.InvalidRequestFieldException;
+import gnb.finseta.backend.logging.IRequestLogger;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.BadRequest;
 import org.springframework.http.HttpStatusCode;
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.mock;
 
 class RestExceptionHandlerTest {
 
-    RestExceptionHandler subject = new RestExceptionHandler();
+    RestExceptionHandler subject = new RestExceptionHandler(mock(IRequestLogger.class));
 
     @Test
     void thatGenericExceptionsAreCaughtAndReturnInternalErr() {
