@@ -1,6 +1,8 @@
 package gnb.finseta.backend.rest.error.handler;
 
 import gnb.finseta.backend.exceptions.InvalidRequestFieldException;
+import gnb.finseta.backend.logging.IRequestLogger;
+import lombok.AllArgsConstructor;
 import org.openapitools.model.BadRequest;
 import org.openapitools.model.Error;
 import org.slf4j.Logger;
@@ -18,16 +20,16 @@ import java.util.List;
 
 
 @ControllerAdvice
+@AllArgsConstructor
 public class RestExceptionHandler {
 
-
-	Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
+	IRequestLogger logger;
 
 	@ExceptionHandler(exception = Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody ErrorResponse handleUnexpectedException(Exception e) {
 
-		logger.error(e.getMessage());
+		logger.logErr(e, e.getMessage());
 		return ErrorResponse.builder(e, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error")
 				.build();
 	}
@@ -35,7 +37,7 @@ public class RestExceptionHandler {
 	@ExceptionHandler(exception = MethodArgumentNotValidException.class)
 	public ResponseEntity<BadRequest> handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException argumentNotValidException) {
-		logger.info("Argument Not valid \n%s".formatted(argumentNotValidException.getMessage()));
+		logger.log("Argument Not valid \n%s".formatted(argumentNotValidException.getMessage()));
 
 		List<Error> listOfErrs = argumentNotValidException.getAllErrors().stream()
 				.map(error -> Error.builder()
@@ -50,7 +52,7 @@ public class RestExceptionHandler {
 
 	@ExceptionHandler(exception = InvalidRequestFieldException.class)
 	public ResponseEntity<BadRequest> handleInvalidRequestFieldException(InvalidRequestFieldException requestFieldException) {
-		logger.info("Request failed validation %s".formatted(requestFieldException.getMessage()));
+		logger.log("Request failed validation %s".formatted(requestFieldException.getMessage()));
 
 		return ResponseEntity.badRequest()
 				.body(BadRequest.builder()
