@@ -19,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static gnb.finseta.backend.TestUtils.defaultAccountBuilder;
 import static gnb.finseta.backend.TestUtils.defaultPaymentBuilder;
@@ -78,6 +79,7 @@ public class PaymentsIntegrationTest {
 				.statusCode(201);
 
 		Payment[] res = given()
+				.queryParam("currencies", List.of("GBP", "NZD"))
 				.get(PAYMENTS_URL)
 				.then()
 				.statusCode(200)
